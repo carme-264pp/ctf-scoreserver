@@ -5,6 +5,8 @@ require 'digest/sha1'
 
 SCORESERVER_VERSION = "0.0.2"
 
+$:.unshift File.dirname(__FILE__)
+
 begin
   require 'config.rb'
 rescue Exception => e
