@@ -76,6 +76,9 @@ helpers do
   end
 end
 
+after do
+  ActiveRecord::Base.connection.close
+end
 get '/answer' do 
   redirect '/challenge'
 end
@@ -168,4 +171,17 @@ get '/?' do
 
   erb :index
 end
+
+$connections = []
+get '/stream', :provides => 'text/event-stream' do
+	stream :keep_open do |out|
+		$connections << out
+		out.callback { $connections.delete out }
+		out.errback do
+			logger.warn "lost connection"
+			$connections.delete out
+		end
+	end
+end
+
 

@@ -1,3 +1,4 @@
+<script type="text/javascript" src="/jquery.min.js"></script>
 <div id="contents">
   <div id="menu">
     <span id="menu_item">challenges</span>
@@ -8,6 +9,8 @@
   <div id="status">
     <span id="status_item">login : <%=h get_name%></span>
     <span id="status_item"> score : <%=h get_score%></span>
+	<span id="status_item"> status : <span id="js_msg"></span></span>
+	<span id="status_item"> notification: <button id="notifyBtn">enable notification</button></span>
   </div>
   <h2>challenges</h2>
   <div id="table">
@@ -29,3 +32,4 @@
     </table>
   </div>
 </div>
+<script src="notification.js"></script>

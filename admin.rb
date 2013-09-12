@@ -46,7 +46,7 @@ end
 
 get '/admin/main' do 
   admin_block do
-    @challenges = Challenge.find(:all)
+    @challenges = Challenge.all
     erb :admin_main
   end
 end
@@ -56,7 +56,7 @@ post '/admin/load' do
   admin_block do
     content_type :json
     begin
-      c = Challenge.find_by_id(params['id'], :first)
+      c = Challenge.find_by(id: params['id'])
     rescue Exception => e
       pp e
     end
@@ -80,7 +80,7 @@ end
 
 # 
 post '/admin/save' do
-  c = Challenge.find_by_id(params['id'])
+  c = Challenge.find_by(id: params['id'])
   c ||= Challenge.new
 
   admin_block do
@@ -91,6 +91,10 @@ post '/admin/save' do
     c.detail   = params['detail']
     c.answer   = params['answer']
     c.save
+	if c.status == 'show'
+		json = { "type" => "challenge", "id" => c.id, "abstract" => c.abstract, "point" => c.point }
+    	$connections.each { |out| out << "data: #{JSON.generate(json)}\n\n" }
+	end
     redirect '/admin/main'
   end
 end
@@ -118,7 +122,8 @@ post '/admin/load_announcement' do
   admin_block do
     content_type :json
     begin
-      a = Announcement.find_by_id(params['id'], :first)
+      #a = Announcement.find_by_id(params['id'], :first)
+      a = Announcement.find_by(id: params['id'])
     rescue Exception => e
       pp e
     end
@@ -140,7 +145,7 @@ post '/admin/load_announcement' do
 end
 
 post '/admin/save_announcement' do 
-  a = Announcement.find_by_id(params['id'])
+  a = Announcement.find_by(id: params['id'])
   a ||= Announcement.new
 
   admin_block do
@@ -150,6 +155,10 @@ post '/admin/save_announcement' do
     a.subject = params['subject']
     a.html    = params['html']
     a.save
+	if a.show == true
+		json = { "type" => "announce", "id" => a.id, "subject" => a.subject, "date" => a.time }
+    	$connections.each { |out| out << "data: #{JSON.generate(json)}\n\n" }
+	end
     redirect '/admin/announcements'
   end
 end
